@@ -29,18 +29,18 @@
 
 ## 部署
 
-仓库名必须**正好**是 `Roswellii.github.io`：
+仓库名必须**正好**是 `yqzhou886.github.io`：
 
 ```bash
 cd homepage
 git init && git add . && git commit -m "personal homepage"
 git branch -M main
-git remote add origin git@github.com:Roswellii/Roswellii.github.io.git
+git remote add origin git@github.com-roswellii:yqzhou886/yqzhou886.github.io.git
 git push -u origin main
 ```
 
 然后 Settings → Pages → Source 选 `Deploy from a branch` → `main` / `root`，
-等 1–2 分钟访问 https://roswellii.github.io
+等 1–2 分钟访问 https://yqzhou886.github.io
 
 ## 更新
 
