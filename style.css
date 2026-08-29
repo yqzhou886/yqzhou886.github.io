@@ -83,7 +83,8 @@ p{margin:0 0 14px}
   padding-left:11px;border-left:2px solid var(--rule);
 }
 .pub-figure{
-  display:block;width:100%;max-width:520px;height:auto;margin:13px auto 0;
+  display:block;width:100%;max-width:520px;max-height:320px;height:auto;
+  object-fit:contain;margin:13px auto 0;
   border:1px solid var(--rule);border-radius:7px;background:var(--card);
 }
 
