@@ -134,6 +134,7 @@ footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--rule);
   border-radius:7px;border:1px solid var(--rule);background:var(--card);
   display:block;
 }
+.anker-gallery .featured-media{grid-column:1/-1}
 .anker-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
 .gallery .ph{
   display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;

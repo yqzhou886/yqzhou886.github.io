@@ -10,6 +10,7 @@
 | `library-overrides.css` | 论文库页面与主页统一的版式样式 |
 | `app/library-data.ts` | 论文库数据快照（由 Zotero 导出） |
 | `robo-1..3.jpg` | RoboNeo 现场作业照片 |
+| `harnessvla.mp4` | HarnessVLA 闭环标注演示视频 |
 | `imagine-interpret-act.png` | “Imagine, Interpret, Act” 论文结果图 |
 | `wechat.png` | 微信二维码 |
 
