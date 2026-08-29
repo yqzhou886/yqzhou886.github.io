@@ -7,6 +7,7 @@
 | `style.css` | 两版共用 |
 | `cv-en.pdf` / `cv.pdf` | 英文简历 / 中文简历（已去掉手机号） |
 | `library.html` | Zotero 论文库只读索引（支持搜索、主题筛选与阅读时间轴） |
+| `library-overrides.css` | 论文库页面与主页统一的版式样式 |
 | `app/library-data.ts` | 论文库数据快照（由 Zotero 导出） |
 | `robo-1..3.jpg` | RoboNeo 现场作业照片 |
 | `imagine-interpret-act.png` | “Imagine, Interpret, Act” 论文结果图 |

@@ -1,0 +1,296 @@
+/* Keep the paper-library view visually aligned with the personal homepage. */
+:root {
+  --ink: #1a1a1a;
+  --muted: #6b6b6b;
+  --paper: #ffffff;
+  --line: #e2e2e2;
+  --teal: #1f3a5f;
+  --orange: #1f3a5f;
+  --purple: #6f668d;
+  --blue: #315d86;
+  --gold: #9a7131;
+  --green: #63735c;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.68;
+}
+
+.shell {
+  max-width: 790px;
+  padding: 42px 24px 82px;
+}
+
+.top {
+  height: auto;
+  min-height: 58px;
+  padding-bottom: 18px;
+}
+
+.mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  background: var(--teal);
+  font-size: 18px;
+}
+
+.brand {
+  gap: 10px;
+}
+
+.brandname {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.status {
+  font-size: 12px;
+}
+
+.status a {
+  color: var(--teal);
+  margin-right: 12px;
+}
+
+.hero {
+  display: block;
+  padding: 38px 0 22px;
+}
+
+.hero h1 {
+  max-width: none;
+  margin: 10px 0 8px;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 31px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+.hero h1 em {
+  color: inherit;
+  font-style: normal;
+}
+
+.lede {
+  max-width: 630px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 15.5px;
+  line-height: 1.68;
+}
+
+.aside {
+  width: auto;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.aside strong {
+  color: var(--teal);
+  font-family: Georgia, serif;
+  font-size: 30px;
+  font-weight: 400;
+  margin-right: 5px;
+}
+
+.aside p {
+  display: inline;
+  margin: 0;
+}
+
+.stats {
+  gap: 8px;
+  margin: 0 0 34px;
+}
+
+.stat {
+  border-radius: 7px;
+  padding: 12px 11px 11px;
+  background: #fafafa;
+}
+
+.stat strong {
+  font-family: Georgia, serif;
+  font-size: 22px;
+}
+
+.toolbar {
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tabs {
+  background: #f3f4f6;
+}
+
+.tabs button.active {
+  color: var(--teal);
+}
+
+.toolbar > span {
+  color: var(--muted);
+}
+
+.content {
+  grid-template-columns: 188px minmax(0, 1fr);
+  gap: 30px;
+}
+
+.sidehead {
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: 11px;
+}
+
+.nav button {
+  padding: 8px 8px;
+}
+
+.nav button:hover,
+.nav button.active {
+  box-shadow: none;
+  background: #fafafa;
+}
+
+.nav button.active .main-label,
+.subnav button:hover,
+.subnav button.active {
+  color: var(--teal);
+}
+
+.note {
+  background: #fafafa;
+  border: 1px solid var(--line);
+}
+
+.head,
+.map-head {
+  padding-bottom: 14px;
+  border-bottom-color: var(--line);
+}
+
+.head h2,
+.map-head h2 {
+  margin: 6px 0 3px;
+  color: var(--teal);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.search,
+.controls select {
+  border-color: var(--line);
+}
+
+.card {
+  padding: 13px 11px 12px 8px;
+  border-radius: 7px;
+  background: #fafafa;
+}
+
+.card:hover {
+  border-color: var(--line);
+  background: #fff;
+}
+
+.title {
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.score strong {
+  color: var(--teal);
+}
+
+.bar {
+  background: #e8edf3;
+}
+
+.bar i {
+  background: var(--teal);
+}
+
+.year-label,
+.year-summary strong,
+.chip-title {
+  font-family: inherit;
+}
+
+.chip {
+  border-radius: 7px;
+}
+
+.footer {
+  margin-top: 52px;
+  color: var(--faint, #8e8e8e);
+}
+
+@media (max-width: 900px) {
+  .shell {
+    padding: 34px 22px 64px;
+  }
+
+  .content {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 560px) {
+  .shell {
+    padding: 28px 16px 52px;
+  }
+
+  .hero {
+    padding-top: 32px;
+  }
+
+  .hero h1 {
+    font-size: 29px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8e8e8;
+    --muted: #a0a6ad;
+    --paper: #14171a;
+    --line: #2a2f35;
+    --teal: #8fb4e0;
+    --orange: #8fb4e0;
+  }
+
+  .stat,
+  .card,
+  .card:hover,
+  .search,
+  .controls select,
+  .nav button:hover,
+  .nav button.active,
+  .subnav button:hover,
+  .subnav button.active,
+  .chip {
+    background: #1b1f24;
+  }
+
+  .tabs,
+  .note {
+    background: #22272d;
+  }
+}
