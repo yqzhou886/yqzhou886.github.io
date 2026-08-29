@@ -82,6 +82,10 @@ p{margin:0 0 14px}
   margin-top:6px;font-size:14px;color:var(--muted);
   padding-left:11px;border-left:2px solid var(--rule);
 }
+.pub-figure{
+  display:block;width:100%;max-width:520px;height:auto;margin:13px auto 0;
+  border:1px solid var(--rule);border-radius:7px;background:var(--card);
+}
 
 /* ---------- systems ---------- */
 .sys{margin-bottom:34px}

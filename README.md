@@ -7,6 +7,7 @@
 | `style.css` | 两版共用 |
 | `cv-en.pdf` / `cv.pdf` | 英文简历 / 中文简历（已去掉手机号） |
 | `robo-1..3.jpg` | RoboNeo 现场作业照片 |
+| `imagine-interpret-act.png` | “Imagine, Interpret, Act” 论文结果图 |
 | `wechat.png` | 微信二维码 |
 
 右上角有 English | 中文 切换。

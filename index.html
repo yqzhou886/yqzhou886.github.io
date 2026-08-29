@@ -63,11 +63,7 @@
       Jiaxiang Zhou, Yizheng Huang</span>
     <div class="v"><span class="venue">ACL ARR 2026</span>
       <span class="badge">FIRST AUTHOR</span></div>
-    <div class="result">Turns a single successful egocentric video into reusable
-      discrete route codes. The base VLN policy stays frozen while a
-      Hierarchical Route Prior reranks its candidates toward previously
-      successful route structure. On VLN-CE val-unseen: SR 32.0% → 40.0%,
-      SPL 0.213 → 0.275, NE 8.21 → 7.69.</div>
+    <div class="result">Turns one successful egocentric navigation video into depth-aware route memory and uses a lightweight prior to rerank a frozen VLN policy, enabling repeatable route execution without fine-tuning.</div>
   </div>
 
   <div class="pub">
@@ -77,11 +73,10 @@
       Yuechen Wu, Feixiang Jing</span>
     <div class="v"><span class="venue">AAAI 2027</span>
       <span class="badge">FIRST AUTHOR</span></div>
-    <div class="result">A lightweight Bellman-style objective organizes a shared
-      predictive latent into a goal-relative progress coordinate — no reward,
-      success or phase labels, and no separate progress network. Closed-loop
-      success improves by 4.7–14.7 points over a matched LeWM control across
-      four visual-control tasks.</div>
+    <div class="result">Shapes predictive world-model latents into a goal-relative progress coordinate and uses it to initialize multimodal search, improving closed-loop control without reward labels or a new evaluator.</div>
+    <img class="pub-figure" src="imagine-interpret-act.png"
+      alt="Qualitative visual-control comparison across LeWM, CEM and LSP iterations"
+      loading="lazy">
   </div>
 
   <div class="pub">
@@ -92,9 +87,7 @@
     <div class="v"><span class="venue">Submitted to KDD 2027 Datasets and Benchmarks Track</span>
       <span class="badge">FIRST AUTHOR</span>
       <a href="https://github.com/yqzhou886/TUTOR-Bench" target="_blank" rel="noopener noreferrer">Code &amp; benchmark</a></div>
-    <div class="result">A directed cross-task robot-data utility benchmark with
-      182 target–donor pairs: 40 positive, 130 negative, and mean utility of
-      −15.0 percentage points.</div>
+    <div class="result">Introduces an auditable, target-conditioned benchmark that measures positive and negative donor-task transfer across 182 ordered task pairs under fixed-budget robot data reuse.</div>
   </div>
 
   <div class="pub">

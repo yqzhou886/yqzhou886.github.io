@@ -60,9 +60,7 @@
       Jiaxiang Zhou, Yizheng Huang</span>
     <div class="v"><span class="venue">ACL ARR 2026</span>
       <span class="badge">第一作者</span></div>
-    <div class="result">将单段成功的第一人称视频转化为可复用的离散路径码。
-      推理时基础 VLN 策略保持冻结，由分层路径先验将其候选重排到此前成功的路径结构上。
-      VLN-CE val-unseen：SR 32.0% → 40.0%，SPL 0.213 → 0.275，NE 8.21 → 7.69。</div>
+    <div class="result">将一次成功的第一视角导航视频压缩为深度感知路线记忆，并通过轻量级先验重排冻结 VLN 策略的动作候选，实现无需微调的可复现导航适配。</div>
   </div>
 
   <div class="pub">
@@ -72,9 +70,10 @@
       Yuechen Wu, Feixiang Jing</span>
     <div class="v"><span class="venue">AAAI 2027</span>
       <span class="badge">第一作者</span></div>
-    <div class="result">用轻量的 Bellman 式目标，把共享预测潜在空间组织成一个
-      相对于目标的进展坐标——不需要奖励、成功或阶段标签，也不引入独立的进展网络。
-      在四项视觉控制任务上，闭环成功率较对照的 LeWM 提升 4.7–14.7 个百分点。</div>
+    <div class="result">在预测性世界模型的 latent 中学习目标相关的进度表示，并以此初始化保留多种动作模式的规划搜索，在不依赖奖励标签或改变终端评价器的情况下提升闭环控制性能。</div>
+    <img class="pub-figure" src="imagine-interpret-act.png"
+      alt="LeWM、CEM 与 LSP 在不同迭代阶段的视觉控制结果对比"
+      loading="lazy">
   </div>
 
   <div class="pub">
@@ -85,8 +84,7 @@
     <div class="v"><span class="venue">投稿 KDD 2027 Datasets and Benchmarks Track</span>
       <span class="badge">第一作者</span>
       <a href="https://github.com/yqzhou886/TUTOR-Bench" target="_blank" rel="noopener noreferrer">代码与数据</a></div>
-    <div class="result">构建 182 个有向目标–供体组合的机器人跨任务数据效用基准。
-      其中 40 个产生正迁移、130 个产生负迁移，平均效用为 −15.0 个百分点。</div>
+    <div class="result">构建一个面向目标任务、可审计的跨任务机器人数据复用基准，用固定预算下的真实训练干预量化 donor 数据对 target 任务的正负迁移效用。</div>
   </div>
 
   <div class="pub">
