@@ -129,6 +129,12 @@ footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--rule);
   display:block;
 }
 .gallery img.contain{object-fit:contain;padding:4px}
+.gallery video{
+  width:100%;aspect-ratio:16/9;object-fit:cover;
+  border-radius:7px;border:1px solid var(--rule);background:var(--card);
+  display:block;
+}
+.anker-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
 .gallery .ph{
   display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;
   border:1px dashed var(--rule);border-radius:8px;color:var(--faint);
@@ -136,6 +142,7 @@ footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--rule);
   line-height:1.45;
 }
 .caption{margin-top:8px;font-size:13px;color:var(--faint)}
+@media (max-width:560px){.anker-gallery{grid-template-columns:1fr}}
 
 .lead{color:var(--muted);font-size:15.5px;margin:-4px 0 24px}
 
