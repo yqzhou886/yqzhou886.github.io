@@ -43,6 +43,8 @@ html{scroll-behavior:smooth}
 .lead-copy{font-family:Georgia,"Songti SC",serif;font-size:19px;line-height:1.78;margin-bottom:24px}
 .note-content p{line-height:1.82}
 .note-content h3{font-size:16px;margin:32px 0 12px}
+.note-content h4{font-size:14px;margin:24px 0 10px}
+#directions>h3{font-size:19px;margin-top:58px;padding-top:24px;border-top:1px solid var(--rule)}
 .cite{font-size:10px;margin-left:3px;vertical-align:super;white-space:nowrap}
 .boundary-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0}
 .boundary-grid article{border:1px solid var(--rule);border-radius:6px;padding:18px 20px}
@@ -106,7 +108,7 @@ html{scroll-behavior:smooth}
 .project-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:24px 0}
 .project-cards article{display:flex;flex-direction:column;border:1px solid var(--rule);border-radius:6px;padding:18px}
 .project-cards>article>span{font-size:9px;letter-spacing:.1em;color:var(--note-blue);font-weight:750}
-.project-cards h3{font-size:15px;margin:7px 0 9px}
+.project-cards h3,.project-cards h4{font-size:15px;margin:7px 0 9px}
 .project-cards p{font-size:12.5px;line-height:1.62;color:var(--muted);margin:0 0 18px}
 .project-cards small{font-size:10.5px;line-height:1.5;color:var(--faint);margin-top:auto;padding-top:11px;border-top:1px solid var(--rule)}
 .closing-box{background:var(--note-blue);color:var(--bg);padding:23px 25px;border-radius:6px;margin-top:28px}
