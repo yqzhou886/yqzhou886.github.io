@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>从目前的实验效果看，VLA 下一步做什么？</title>
+<meta name="description" content="一份从实验室现有结果出发的 VLA 研究笔记：桌面任务之后，为什么下一步应关注数据分布、空间移动、长程调度与精细接触。">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="research-note.css">
+</head>
+<body id="top">
+<div class="note-wrap">
+  <nav class="note-nav" aria-label="页面导航">
+    <a href="zh.html">← 返回主页</a>
+    <span>研究笔记 · 组会版</span>
+  </nav>
+
+  <header class="note-hero">
+    <p class="note-kicker">VISION–LANGUAGE–ACTION · 2026.08</p>
+    <h1>从目前的实验效果看，<br>VLA 下一步做什么？</h1>
+    <p class="note-deck">这不是一次从论文分类出发的综述，而是对我们目前实验进展的一次整理：已经能稳定做出来的是什么，继续沿着原来的路线优化还有多少收益，以及接下来哪些问题更值得投入。</p>
+
+    <div class="thesis-box">
+      <span>目前的判断</span>
+      <p>在单个、受控的日常任务上，我们遇到的问题正在从“模型能不能学会”转成“数据是否覆盖正确的状态”。除了继续做好桌面任务，我们也可以并行验证几类不同问题：扩大任务的空间范围、用调度器组合长程技能，以及借助接触任务建立真机强化学习闭环。</p>
+    </div>
+  </header>
+
+  <div class="note-layout">
+    <aside class="note-toc" aria-label="目录">
+      <span>ON THIS PAGE</span>
+      <a href="#claim">01 · 从实验现象出发</a>
+      <a href="#data">02 · 为什么关注数据</a>
+      <a href="#directions">03 · 几个并列方向</a>
+      <a href="#references">参考文献</a>
+    </aside>
+
+    <main class="note-content">
+      <section class="note-section" id="claim">
+        <div class="section-head">
+          <span>01</span>
+          <h2>先从我们已经做出来的效果说起</h2>
+        </div>
+
+        <p class="lead-copy">从目前的复现实验和组内讨论看，叠衣服、叠方块、抓取放置这类常见桌面任务，已经不再只是“有没有模型能做”的问题。下面几条是我们从实际实验中得到的阶段性观察。</p>
+
+        <h3>1. 约 500 条数据，已经能把叠衣服做到可接受</h3>
+        <ul class="finding-list">
+          <li>我们收集了约 500 条叠衣服任务数据。</li>
+          <li>在成熟 VLA 基座上训练后，实际性能已经达到可以接受的水平。</li>
+          <li>对于固定本体、固定桌面和相对稳定的任务流程，获得基本可用能力所需的数据规模并没有想象中大。</li>
+        </ul>
+
+        <h3>2. 加入 χ₀ 数据后，模型还能学出更复杂的操作</h3>
+        <ul class="finding-list">
+          <li>在原有数据中加入 χ₀（kai0）数据后，模型能够学出先在空中抖动、将衣物展平，再继续折叠的操作。</li>
+          <li>这种行为不只是重复抓取和放置，而是包含了有意义的中间状态与操作策略。</li>
+          <li>成熟基座已经具备较强的动作学习能力；数据里有没有出现关键操作方式，会直接影响模型最终能学出什么。</li>
+        </ul>
+
+        <h3>3. 前期“跑不通”主要是系统接口问题</h3>
+        <ul class="finding-list">
+          <li>策略早期一直跑不通、动作明显卡顿，一度看起来像是模型能力不足。</li>
+          <li>后来发现，主要问题来自坐标系变换没有处理正确，以及相邻 action chunk 之间缺少平滑衔接。</li>
+          <li>把坐标、时序和 chunk 衔接问题解决以后，很多原本归因于模型的异常现象也随之消失。</li>
+        </ul>
+        <p>判断模型效果之前，首先要确保坐标系、控制频率、动作表示和执行接口是正确的，否则系统层面的错误很容易被误判为学习能力不足。</p>
+
+        <h3>4. 系统打通以后，问题基本转向“怎样收集数据”</h3>
+        <ul class="finding-list">
+          <li>哪些初始状态需要覆盖？</li>
+          <li>衣物处于不同形态时，是否都有对应示范？</li>
+          <li>数据里是否包含抖动、展平等关键中间操作？</li>
+          <li>模型执行偏离以后，有没有失败恢复轨迹可以学习？</li>
+          <li>不同类型的数据应该直接混合，还是分别训练后再组合？</li>
+        </ul>
+        <p>我们目前的感受是：在这类桌面任务上，成熟基座已经足够强。系统接口打通以后，剩余问题几乎都指向数据的质量、覆盖、组合和结构。</p>
+
+        <h3>5. “做得差不多了”有一个明确边界</h3>
+        <div class="boundary-grid">
+          <article>
+            <span>这个判断成立的条件</span>
+            <ul>
+              <li>机器人本体和基座位置固定</li>
+              <li>相机视角和桌面高度基本不变</li>
+              <li>物体与初始状态的分布有限</li>
+              <li>任务在一张桌面内、任务链较短</li>
+            </ul>
+          </article>
+          <article>
+            <span>放宽条件后仍会暴露的</span>
+            <ul>
+              <li>换房间、换高度、换视角后的稳定性</li>
+              <li>移动、操作与全身控制的连续衔接</li>
+              <li>长程任务中的终止判断和错误恢复</li>
+              <li>毫米级、遮挡下的接触与受力控制</li>
+            </ul>
+          </article>
+        </div>
+
+        <h3>6. 公开工作也支持这一观察</h3>
+        <ul class="finding-list">
+          <li>π₀ 已经展示了洗衣折叠、装箱等灵巧任务。<a class="cite" href="https://arxiv.org/abs/2410.24164" target="_blank" rel="noopener noreferrer">[1]</a></li>
+          <li>π₀.₅ 通过异构联合训练，把能力推进到陌生家庭中的长程整理任务。<a class="cite" href="https://arxiv.org/abs/2504.16054" target="_blank" rel="noopener noreferrer">[2]</a></li>
+          <li>TurboVLA 用仅 0.2B 参数在 LIBERO 上报告了 97.7% 平均成功率，并在 RTX 4090 上达到约 31.2 ms 延迟。<a class="cite" href="https://arxiv.org/abs/2607.27205" target="_blank" rel="noopener noreferrer">[3]</a></li>
+        </ul>
+
+        <div class="caution-box">
+          <strong>但需要区分“任务做出来了”和“能力解决了”。</strong>
+          <p>2026 年的一项 benchmark audit 发现，一个 0.09B、没有语言编码器的 probe 也能在 LIBERO 上接近已有 SOTA；在加入空间、物体和指令扰动后，代表性 VLA 仍会显著掉点。更准确的说法是：<em>固定协议里的任务正在饱和，协议外的鲁棒性仍远未饱和。</em><a class="cite" href="https://arxiv.org/abs/2606.04233" target="_blank" rel="noopener noreferrer">[4]</a><a class="cite" href="https://arxiv.org/abs/2602.06556" target="_blank" rel="noopener noreferrer">[5]</a></p>
+        </div>
+      </section>
+
+      <section class="note-section" id="data">
+        <div class="section-head">
+          <span>02</span>
+          <h2>为什么我们开始更关注数据，而不是模型细节？</h2>
+        </div>
+
+        <p class="lead-copy">这个判断首先来自我们自己的实验感受：在 χ₀（kai0）这类方案里，模型结构本身对最终效果的影响并没有想象中大。直接把同一批任务数据交给 π₀.₅ 训练，也可能得到相近的基本能力。真正持续影响成功率的，往往是采到了什么数据、不同数据怎样组合，以及训练分布和实际部署之间是否一致。</p>
+
+        <p>χ₀ 本身也说明了这一点。它没有换掉 π₀.₅ 的主干，而是直接对开源 π₀.₅ 做全参数微调，把主要设计放在数据组织、训练信号和部署对齐上。换句话说，它更像是在回答“怎样让一个已经足够强的基座吃对数据”，而不是重新发明一个 VLA。</p>
+
+        <figure class="note-figure wide">
+          <img src="assets/vla-note/kai0-overview.png" alt="χ₀ 系统概览：衣物操作、模型合并、训练部署对齐与阶段优势" loading="lazy">
+          <figcaption><b>χ₀ 系统概览。</b> Model Arithmetic、Train–Deploy Alignment 和 Stage Advantage 分别处理训练数据、模型偏置与部署轨迹之间的不一致。图片来自论文。<a href="https://arxiv.org/html/2602.09021" target="_blank" rel="noopener noreferrer">原文 ↗</a></figcaption>
+        </figure>
+
+        <div class="four-points">
+          <article><span>01</span><strong>数据拆分</strong><p>按状态、外观和任务阶段形成互补子集，而不是只看总 episode 数。</p></article>
+          <article><span>02</span><strong>失败附近数据</strong><p>用 DAgger 和人为构造的失败状态采集恢复轨迹。</p></article>
+          <article><span>03</span><strong>组合方式</strong><p>子集分别训练后做权重合并，实验中超过了全数据联合训练。</p></article>
+          <article><span>04</span><strong>部署对齐</strong><p>处理动作延迟、chunk 衔接和真实执行造成的时序偏差。</p></article>
+        </div>
+
+        <p>因此，“把 χ₀ 的数据直接交给 π₀.₅ 训练是否也差不多”是一个值得认真做的对照实验。不过这里的“数据”不能只理解为原始 demonstration。χ₀ 的收益还来自数据如何拆分、哪些失败状态被补进来、用什么 OOD 集合选择组合，以及训练动作和真实控制频率如何对齐。论文甚至观察到，基于不同数据子集训练的 checkpoint 做 Model Arithmetic，能够超过直接把全部数据混合训练的候选。<a class="cite" href="https://arxiv.org/html/2602.09021" target="_blank" rel="noopener noreferrer">[6]</a></p>
+
+        <blockquote>下一阶段更值得优化的，可能不是 dataset size，而是 dataset geometry：覆盖了哪些状态、状态之间怎样连接，以及模型犯错以后能否在数据中找到回来的路径。</blockquote>
+
+        <p>数据 scaling 研究也给出了相似结论：环境和物体的多样性比在同一条件下重复采集更多 demonstration 更重要，重复数量达到阈值后边际收益明显下降。π₀.₅ 的开放环境泛化，同样依赖多机器人数据、网页视觉语言数据、目标检测、子任务预测和低层动作之间的异构联合训练。<a class="cite" href="https://arxiv.org/abs/2410.18647" target="_blank" rel="noopener noreferrer">[7]</a><a class="cite" href="https://arxiv.org/abs/2504.16054" target="_blank" rel="noopener noreferrer">[2]</a></p>
+
+        <div class="definition-box">
+          <strong>数据中心 ≠ 无差别堆数据</strong>
+          <p>跨本体数据如果没有统一物理表示和合理采样比例，可能产生负迁移。数据质量、覆盖、动作表示、失败恢复和混合策略是一个整体设计问题。<a class="cite" href="https://arxiv.org/abs/2602.09722" target="_blank" rel="noopener noreferrer">[8]</a></p>
+        </div>
+
+        <h3>这并不意味着模型结构不重要</h3>
+        <p>如果只问“能不能把东西放好”，架构差异的边际收益可能正在变小；但如果问实时性、显存、控制频率和部署成本，架构仍然很重要。TurboVLA 在 4090 上以约 30 Hz 运行的价值就在这里：它未必让方块叠得更聪明，却说明相近的任务能力可以用更低成本、更高频率实现。</p>
+
+        <p>沿着这个判断继续往下，选题自然会发生变化：与其在同一张桌面上继续比较几个百分点，不如主动改变任务本身，让现有系统面对原来没有覆盖的状态。我们目前想到的三个方向，分别对应空间范围、任务长度和接触精度三个维度。</p>
+      </section>
+
+      <section class="note-section" id="mobile">
+        <div class="section-head">
+          <span>03</span>
+          <h2>第一步：先把任务的空间范围扩大</h2>
+        </div>
+
+        <p class="lead-copy">最直接的扩展，是把“桌面内操作”变成“桌面之间的操作”：从桌 A 拿起物体，带着它移动，再放到桌 B。原来的抓取技能仍然有用，但机器人不再始终站在最佳位置。</p>
+
+        <figure class="note-figure compact">
+          <img src="assets/vla-note/groot-mobile.jpg" alt="GR00T Whole-Body Control 中 G1 将桌上的易拉罐投入垃圾桶" loading="lazy">
+          <figcaption><b>GR00T Whole-Body Control 实机任务。</b> G1 从小桌取易拉罐，转身、踩下垃圾桶踏板并投入。图片来自 NVIDIA 官方评测视频。<a href="https://github.com/NVIDIA/Isaac-GR00T/blob/main/examples/GR00TWholeBodyControl/README.md" target="_blank" rel="noopener noreferrer">官方页面 ↗</a></figcaption>
+        </figure>
+
+        <div class="stage-flow" aria-label="移动操作任务阶段">
+          <span>定位目标</span><b>→</b><span>走近桌面</span><b>→</b><span>建立操作姿态</span><b>→</b><span>抓取</span><b>→</b><span>携物移动</span><b>→</b><span>重新放置</span>
+        </div>
+
+        <p>GR00T 官方已经把同类任务做成完整 workflow：例如从货架取箱子放入蓝色容器，以及从小桌拿易拉罐投入垃圾桶。流程覆盖环境搭建、遥操作采集、LeRobot 数据转换、GR00T 后训练和闭环评估。<a class="cite" href="https://github.com/isaac-sim/IsaacLab-Arena/blob/main/docs/pages/example_workflows/locomanipulation/index.rst" target="_blank" rel="noopener noreferrer">[9]</a></p>
+
+        <div class="metric-strip">
+          <div><strong>73.6%</strong><span>走到桌前并抓取<br>159 / 216</span></div>
+          <div><strong>66.7%</strong><span>桌面易拉罐到垃圾桶<br>8 / 12</span></div>
+          <p>官方记录的失败主要来自漏抓、抓取不稳定、把物体推出可达区域，以及踩不中垃圾桶踏板。自主重试被计为成功。</p>
+        </div>
+
+        <h3>为什么真实场景不好复现？</h3>
+        <div class="plain-table">
+          <div><strong>桌面策略</strong><span>通常默认相机、基座、桌面高度和机械臂工作区相对固定。</span></div>
+          <div><strong>移动操作</strong><span>底盘或双足每次停靠都会改变视角、距离、可达性和后续抓取分布。</span></div>
+          <div><strong>全身系统</strong><span>还要匹配遥操作设备、手爪、全身控制器、相机同步、地面摩擦和安全边界。</span></div>
+          <div><strong>误差传播</strong><span>前一阶段少停十厘米，可能让后面的视觉输入和关节可达域一起偏移。</span></div>
+        </div>
+
+        <p>这也解释了为什么我们觉得这个方向值得做、但真实场景很难复现。它并不只是“训练一个带腿的 VLA”，而是要求导航、全身控制、视角变化和机械臂操作在同一套系统中连续工作。对实验室而言，比较合理的起点不是直接复现完整家庭任务，而是先做“桌 A 取物—移动—桌 B 放置”的最小闭环，并把导航到位、抓取、携物和放置分别评测。</p>
+      </section>
+
+      <section class="note-section" id="orchestration">
+        <div class="section-head">
+          <span>04</span>
+          <h2>第二步：再把局部能力接成长程任务</h2>
+        </div>
+
+        <p class="lead-copy">一旦任务跨越多个位置和阶段，问题就不再只是每个动作能否做好，还包括下一步做什么、何时切换、失败以后回到哪里。长程任务未必需要一个 VLA 从头控制到尾；更现实的做法，是在已有局部技能外面加一个调度器。</p>
+
+        <figure class="note-figure wide transparent">
+          <img src="assets/vla-note/harness-vla-overview.png" alt="Harness VLA 使用解析控制连接多个 VLA 接触操作区域" loading="lazy">
+          <figcaption><b>Harness VLA 的基本思想。</b> 冻结 VLA 负责局部 contact-rich control，解析原语负责目标感知、自由空间移动和重新 staging；调度器在不同局部区域之间连接它们。<a href="https://arxiv.org/abs/2607.08448" target="_blank" rel="noopener noreferrer">论文 ↗</a></figcaption>
+        </figure>
+
+        <div class="orchestrator-diagram" aria-label="层级调度架构">
+          <div class="planner"><span>高层调度器</span><strong>分解 · 选择 · 验证 · 恢复</strong></div>
+          <div class="branch"><i></i><i></i><i></i></div>
+          <div class="skills">
+            <article><span>解析原语</span><strong>导航 / 对齐 / 搬运</strong></article>
+            <article class="accent"><span>Frozen VLA</span><strong>抓取 / 插入 / 开合</strong></article>
+            <article><span>系统模块</span><strong>成功检测 / 记忆</strong></article>
+          </div>
+        </div>
+
+        <p>Harness VLA 不让 agent 直接输出关节动作，也不允许它在部署时发明新技能。它只暴露一组很小的固定原语：移动、姿态调整、夹爪控制、底盘导航，以及唯一的学习型原语 <code>VLA_ACT</code>。每次调用 VLA 前先把机器人放进合适的局部状态，调用后重新观察和验证；如果接触不稳定，就换姿态或视角再试。<a class="cite" href="https://arxiv.org/abs/2607.08448" target="_blank" rel="noopener noreferrer">[10]</a></p>
+
+        <figure class="note-figure wide">
+          <img src="assets/vla-note/hi-vla-overview.png" alt="层级 VLA 的高层 VLM 与低层 VLA 双循环结构" loading="lazy">
+          <figcaption><b>统一的 Hi-VLA 双循环。</b> 高层 VLM 生成可执行语言子目标，低层 VLA 持续执行，直到终止条件把控制权交回高层。图片来自 <i>What Matters in Orchestrating Robot Policies</i>。<a href="https://arxiv.org/html/2606.10267" target="_blank" rel="noopener noreferrer">原文 ↗</a></figcaption>
+        </figure>
+
+        <h3>这些结果对我们做调度器有什么启发？</h3>
+        <ul class="finding-list">
+          <li><strong>高层 reasoning 比单纯扩大高层 VLM 更重要。</strong>开启 thinking 持续改善结果，但 Lite、Flash、Pro 的规模差异没有稳定转化为系统收益。</li>
+          <li><strong>低层 VLA 的 steerability 是瓶颈。</strong>任务内微调如果损害指令跟随能力，长程组合表现反而会明显下降。</li>
+          <li><strong>何时切换和用什么状态切换很重要。</strong>成功检测通常优于预先猜测执行时间；固定时长时，4–8 秒是论文建议的折中范围。</li>
+          <li><strong>结构化观测比原始图像更可靠。</strong>bounding box 和接触信息能显著改善高层判断。</li>
+          <li><strong>原始历史不是有效记忆。</strong>简单增加当前 episode 的上下文帮助很小，跨 episode 提炼出的成功经验更有价值。</li>
+        </ul>
+
+        <div class="comparison-table" role="table" aria-label="层级 VLA 与 Flat VLA 结果">
+          <div class="table-row table-head"><span>配置</span><span>短程</span><span>长程</span><span>推理</span><span>真实 ALOHA</span></div>
+          <div class="table-row best"><strong>Best hierarchy</strong><span>78.22%</span><span>67.08%</span><span>80.89%</span><span>12 / 15</span></div>
+          <div class="table-row"><strong>Naive hierarchy</strong><span>69.57%</span><span>40.56%</span><span>66.49%</span><span>9 / 15</span></div>
+          <div class="table-row"><strong>Flat VLA</strong><span>69.63%</span><span>25.30%</span><span>50.90%</span><span>3 / 15</span></div>
+        </div>
+        <p class="table-note">三种设置使用相同的底层 VLA 和初始任务指令。优势主要出现在需要组合与推理的任务，而不是最短的原子技能。<a class="cite" href="https://arxiv.org/html/2606.10267" target="_blank" rel="noopener noreferrer">[11]</a></p>
+      </section>
+
+      <section class="note-section" id="contact">
+        <div class="section-head">
+          <span>05</span>
+          <h2>第三步：把任务推进到真正依赖接触的阶段</h2>
+        </div>
+
+        <p class="lead-copy">空间范围和任务链解决的是“做得更远、更久”，插头插座一类任务则要求“做得更准”。它不是普通 pick-and-place 的缩小版：接触以后视觉可能被机械手遮挡，真正决定成功的是毫米级错位、摩擦、受力方向和是否已经插到底。</p>
+
+        <figure class="note-figure wide">
+          <img src="assets/vla-note/forcevla-plug.jpg" alt="ForceVLA 使用六轴外力信号修正插头插入姿态" loading="lazy">
+          <figcaption><b>ForceVLA 插头插入示意。</b> 无力觉策略在错误姿态下持续施力并失败；ForceVLA 根据六轴外力调整插入位置。论文报告五类接触任务平均提升 23.2 个百分点，插头插入最高达到 80%。<a href="https://arxiv.org/abs/2505.22159" target="_blank" rel="noopener noreferrer">论文 ↗</a></figcaption>
+        </figure>
+
+        <p>这类任务也会迫使我们把前面“数据比模型细节更关键”的判断做得更完整。只收成功示范通常不足以覆盖插偏、卡住和过度施力后的状态，因此训练流程会从一次性的 behavior cloning 变成一个数据闭环：先用成功示范获得基本策略，再部署策略、观察它如何失败，收集人类接管与恢复轨迹，最后利用奖励、价值函数或 residual policy 做强化学习。</p>
+
+        <div class="rl-loop" aria-label="精细任务的数据和强化学习闭环">
+          <span>成功示范</span><b>→</b><span>监督微调</span><b>→</b><span>机器人 rollout</span><b>→</b><span>失败 / 人类干预</span><b>→</b><span>奖励与价值学习</span><b>→</b><span>RL 后训练</span>
+        </div>
+
+        <div class="data-stack">
+          <article><span>SUCCESS</span><strong>成功轨迹</strong><p>告诉模型一条任务可行路径，适合作为初始化。</p></article>
+          <article><span>FAILURE</span><strong>失败与恢复</strong><p>覆盖错位、打滑、卡住、过度施力和视觉遮挡后的状态。</p></article>
+          <article><span>CONTACT</span><strong>力与触觉</strong><p>补充 RGB 难以观测的接触阶段和插入深度。</p></article>
+          <article><span>REWARD</span><strong>偏好与结果</strong><p>区分“看起来像”与真正插稳、插到底的动作。</p></article>
+        </div>
+
+        <p>GR00T 官方对困难任务的建议也是从约百条遥操作示范开始，训练后通过 HG-DAgger 收集策略失败时的人类纠正。π*₀.₆ 的 RECAP 则给出了一条更完整的路径：离线 RL 初始化、任务示范微调，再使用真实机器人自主经验、奖励标签和人类干预继续训练。<a class="cite" href="https://github.com/NVIDIA/Isaac-GR00T/blob/main/FAQ.md" target="_blank" rel="noopener noreferrer">[12]</a><a class="cite" href="https://www.pi.website/blog/pistar06" target="_blank" rel="noopener noreferrer">[13]</a></p>
+
+        <div class="caution-box">
+          <strong>精细任务的核心不是盲目增加 rollout。</strong>
+          <p>失败数据需要区分可恢复近失误、无效重复和危险状态；真实机器人 RL 还必须设置力矩、速度、空间和人工接管边界。否则“收集失败”很容易变成收集噪声或损坏硬件。</p>
+        </div>
+      </section>
+
+      <section class="note-section" id="projects">
+        <div class="section-head">
+          <span>06</span>
+          <h2>回到我们目前真正可以做的事情</h2>
+        </div>
+
+        <p class="lead-copy">综合目前的实验效果，我们没有必要从零训练一个 foundation VLA。更可行的路线是沿用 π₀.₅、GR00T 等成熟基座，把时间投入到现有桌面实验没有覆盖的状态，并逐步提高系统难度。</p>
+
+        <div class="project-cards">
+          <article>
+            <span>A · MOBILE</span>
+            <h3>跨工作区移动操作</h3>
+            <p>先做“桌 A 取物—移动—桌 B 放置”的最小闭环，分别记录到位、抓取、运输和放置成功率。</p>
+            <small>主要风险：硬件与全身控制复现成本</small>
+          </article>
+          <article>
+            <span>B · HARNESS</span>
+            <h3>长程任务调度器</h3>
+            <p>冻结一个可用 VLA，增加解析原语、成功检测、重试和跨 episode 记忆，研究策略之间的 handoff。</p>
+            <small>主要风险：需要清晰证明不是手写状态机</small>
+          </article>
+          <article>
+            <span>C · CONTACT</span>
+            <h3>插入与精细装配</h3>
+            <p>加入力觉，建立成功示范—失败状态—人类纠正—RL 后训练的数据闭环。</p>
+            <small>主要风险：奖励、安全与真实 rollout 成本</small>
+          </article>
+        </div>
+
+        <div class="closing-box">
+          <span>整条思路</span>
+          <p>我们目前已经能用成熟 VLA 做出不少单桌面任务，因此下一步的重点不再只是换模型，而是把数据分布做对，并逐步把实验从一张桌面扩展到跨工作区，从一个局部技能扩展到长程组合，再从视觉主导的抓放推进到依赖力觉、失败恢复和强化学习的精细接触。</p>
+        </div>
+      </section>
+
+      <section class="note-section references" id="references">
+        <div class="section-head">
+          <span>REF</span>
+          <h2>参考工作</h2>
+        </div>
+        <ol>
+          <li><a href="https://arxiv.org/abs/2410.24164" target="_blank" rel="noopener noreferrer">π₀: A Vision-Language-Action Flow Model for General Robot Control</a>, 2024.</li>
+          <li><a href="https://arxiv.org/abs/2504.16054" target="_blank" rel="noopener noreferrer">π₀.₅: A Vision-Language-Action Model with Open-World Generalization</a>, 2025.</li>
+          <li><a href="https://arxiv.org/abs/2607.27205" target="_blank" rel="noopener noreferrer">TurboVLA: Real-Time VLA at 32 Hz on an RTX 4090</a>, 2026.</li>
+          <li><a href="https://arxiv.org/abs/2606.04233" target="_blank" rel="noopener noreferrer">What Are We Actually Benchmarking in Robot Manipulation?</a>, 2026.</li>
+          <li><a href="https://arxiv.org/abs/2602.06556" target="_blank" rel="noopener noreferrer">LIBERO-X: Robustness Litmus for Vision-Language-Action Models</a>, 2026.</li>
+          <li><a href="https://arxiv.org/abs/2602.09021" target="_blank" rel="noopener noreferrer">χ₀: Resource-Aware Robust Manipulation via Taming Distributional Inconsistencies</a>, 2026.</li>
+          <li><a href="https://arxiv.org/abs/2410.18647" target="_blank" rel="noopener noreferrer">Data Scaling Laws in Imitation Learning for Robotic Manipulation</a>, 2024.</li>
+          <li><a href="https://arxiv.org/abs/2602.09722" target="_blank" rel="noopener noreferrer">Rethinking VLA Scaling: Alignment, Mixture, and Regularization</a>, 2026.</li>
+          <li><a href="https://github.com/isaac-sim/IsaacLab-Arena/blob/main/docs/pages/example_workflows/locomanipulation/index.rst" target="_blank" rel="noopener noreferrer">NVIDIA GR00T Loco-Manipulation Workflow</a>, 2026.</li>
+          <li><a href="https://arxiv.org/abs/2607.08448" target="_blank" rel="noopener noreferrer">Harness VLA: Steering Frozen VLAs into Reliable Manipulation Primitives</a>, 2026.</li>
+          <li><a href="https://arxiv.org/abs/2606.10267" target="_blank" rel="noopener noreferrer">What Matters in Orchestrating Robot Policies</a>, 2026.</li>
+          <li><a href="https://arxiv.org/abs/2505.22159" target="_blank" rel="noopener noreferrer">ForceVLA: Enhancing VLA Models with a Force-Aware MoE</a>, 2025.</li>
+          <li><a href="https://www.pi.website/blog/pistar06" target="_blank" rel="noopener noreferrer">A VLA that Learns from Experience: π*₀.₆ / RECAP</a>, 2025.</li>
+          <li><a href="https://arxiv.org/abs/2604.23001" target="_blank" rel="noopener noreferrer">VLA in Robotics: A Survey of Datasets, Benchmarks, and Data Engines</a>, 2026.</li>
+        </ol>
+      </section>
+    </main>
+  </div>
+
+  <footer class="note-footer">
+    <span>Yiqun Zhou · Group meeting research note</span>
+    <a href="#top">回到顶部 ↑</a>
+  </footer>
+</div>
+</body>
+</html>

@@ -7,7 +7,13 @@
 | `style.css` | 两版共用 |
 | `cv-en.pdf` / `cv.pdf` | 英文简历 / 中文简历（已去掉手机号） |
 | `library.html` | Zotero 论文库只读索引（支持搜索、主题筛选与批注量筛选） |
+| `blog.html` | 中文研究博客索引 |
+| `imagine-interpret-act-talk.html` | “Imagine, Interpret, Act” 中文博客与论文解读页 |
+| `vla-next-step.html` | VLA 研究方向中文博客笔记与组会讲解页 |
+| `blog.css` | 博客索引页样式 |
 | `library-overrides.css` | 论文库页面与主页统一的版式样式 |
+| `paper-talk.css` | 论文讲解页样式（含投屏、移动端、暗色与打印适配） |
+| `research-note.css` | VLA 研究笔记页样式（含移动端、暗色与打印适配） |
 | `app/library-data.ts` | 论文库数据快照（由 Zotero 导出） |
 | `robo-1..3.jpg` | RoboNeo 现场作业照片 |
 | `harnessvla.mp4` | HarnessVLA 闭环标注演示视频 |
