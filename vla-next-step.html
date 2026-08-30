@@ -212,8 +212,8 @@
         <p>一旦任务跨越多个位置和阶段，问题就不再只是每个动作能否做好，还包括下一步做什么、何时切换、失败以后回到哪里。长程任务未必需要一个 VLA 从头控制到尾；更现实的做法，是在已有局部技能外面加一个调度器。</p>
 
         <figure class="note-figure wide transparent">
-          <img src="assets/vla-note/harness-vla-overview.png" alt="Harness VLA 使用解析控制连接多个 VLA 接触操作区域" loading="lazy">
-          <figcaption><b>Harness VLA 的基本思想。</b> 冻结 VLA 负责局部 contact-rich control，解析原语负责目标感知、自由空间移动和重新 staging；调度器在不同局部区域之间连接它们。<a href="https://arxiv.org/abs/2607.08448" target="_blank" rel="noopener noreferrer">论文 ↗</a></figcaption>
+          <img src="assets/vla-note/harness-vla-agentic-planner.png" alt="HarnessVLA：Agentic Planner 调用 VLA 与解析原语，并结合任务记忆完成长程任务" loading="lazy">
+          <figcaption><b>HarnessVLA 系统总览。</b> Agentic Planner 根据任务描述、RGB-D 观测和机器人状态，从固定 Primitive Library 中选择 VLA_ACT、MOVE_TO、ROTATE、SET_GRIPPER 等动作，并利用任务记忆和全局经验组织长程执行。<a href="https://arxiv.org/abs/2607.08448" target="_blank" rel="noopener noreferrer">论文 ↗</a></figcaption>
         </figure>
 
         <div class="orchestrator-diagram" aria-label="层级调度架构">

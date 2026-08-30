@@ -172,7 +172,7 @@ GR00T 官方已经给出了同类任务的完整 workflow，例如从货架取�
 
 一旦任务跨越多个位置和阶段，问题就不再只是每个动作能否做好，还包括下一步做什么、何时切换、失败以后回到哪里。长程任务未必需要一个 VLA 从头控制到尾；更现实的做法，是在已有局部技能外面加一个调度器。
 
-![Harness VLA 使用解析控制连接多个 VLA 接触操作区域](assets/vla-note/harness-vla-overview.png)
+![HarnessVLA：Agentic Planner 调用 VLA 与解析原语，并结合任务记忆完成长程任务](assets/vla-note/harness-vla-agentic-planner.png)
 
 Harness VLA 不让 agent 直接输出关节动作，也不允许它在部署时发明新技能。它只暴露一组很小的固定原语：移动、姿态调整、夹爪控制、底盘导航，以及唯一的学习型原语 `VLA_ACT`。每次调用 VLA 前先把机器人放进合适的局部状态，调用后重新观察和验证；如果接触不稳定，就换姿态或视角再试。[[10]](#参考工作)
 
